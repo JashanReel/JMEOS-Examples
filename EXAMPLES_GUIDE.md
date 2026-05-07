@@ -29,7 +29,7 @@ cd /usr/local/jmeos-examples
 
 # Install the JMEOS fat JAR into the local Maven repository (should only be required once)
 mvn install:install-file \
-  -Dfile=src/lib/JMEOS-fat.jar \
+  -Dfile=src/jar/JMEOS-fat.jar \
   -DgroupId=org.jmeos \
   -DartifactId=jmeos \
   -Dversion=1.0-SNAPSHOT \
@@ -1119,7 +1119,7 @@ If you get `NoClassDefFoundError: functions/error_handler_fn` or
 has not been registered in the local Maven repository. Run:
 ```bash
 mvn install:install-file \
-  -Dfile=src/lib/JMEOS-fat.jar \
+  -Dfile=src/jar/JMEOS-fat.jar \
   -DgroupId=org.jmeos \
   -DartifactId=jmeos \
   -Dversion=1.0-SNAPSHOT \

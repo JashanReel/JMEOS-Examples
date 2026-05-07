@@ -58,7 +58,7 @@ The libmeos.so file is already available but just in case you ever need to creat
 
 The native MEOS library must be compiled for Linux. This only needs to be done once.
 ```bash
-apt-get install -y git cmake gcc g++ libgeos-dev libproj-dev libjson-c-dev libssl-dev
+apt-get install -y git cmake gcc g++ libgeos-dev libproj-dev libjson-c-dev libssl-dev libgsl-dev
 
 cd /tmp
 git clone --depth 1 https://github.com/MobilityDB/MobilityDB.git
