@@ -35,7 +35,8 @@ RUN ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn
 RUN git clone https://github.com/JashanReel/JMEOS-Examples /usr/local/jmeos-examples
 
 # Copy libmeos.so so JarLibraryLoader can find it
-RUN cp /usr/local/lib/libmeos.so /usr/local/jmeos-examples/src/libmeos.so
+RUN mkdir -p /usr/local/jmeos-examples/src && \
+    cp /usr/local/lib/libmeos.so /usr/local/jmeos-examples/src/libmeos.so
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
 

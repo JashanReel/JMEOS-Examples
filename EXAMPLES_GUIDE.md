@@ -27,6 +27,15 @@ docker exec -it jmeos-examples /bin/bash
 # If necessary
 cd /usr/local/jmeos-examples
 
+# Install the JMEOS fat JAR into the local Maven repository (should only be required once)
+mvn install:install-file \
+  -Dfile=src/lib/JMEOS-fat.jar \
+  -DgroupId=org.jmeos \
+  -DartifactId=jmeos \
+  -Dversion=1.0-SNAPSHOT \
+  -Dpackaging=jar \
+  -DgeneratePom=true
+
 # Compile all examples
 mvn clean compile
 
@@ -38,6 +47,12 @@ mvn test
 mvn test -Dtest=TestFile
 mvn test -Dtest=TestFile#testName
 ```
+
+> **Note**: `install:install-file` registers the JMEOS fat JAR in the local Maven
+> repository (`~/.m2`). It only needs to be run once per container: if you restart
+> the container, `~/.m2` is preserved as long as you don't recreate it.
+> The `-DgeneratePom=true` flag is required to avoid a "POM is missing" warning
+> that would prevent dependency resolution.
 
 ---
 
@@ -340,9 +355,9 @@ mvn exec:java -Dexec.mainClass="examples.N06_BerlinMOD_Clip"
 
 **Process**:
 1. For each trip:
-   - Total distance
-   - Clip to each commune &#8594; distance in commune
-   - Clip to Brussels region &#8594; inside/outside
+    - Total distance
+    - Clip to each commune &#8594; distance in commune
+    - Clip to Brussels region &#8594; inside/outside
 
 **Output**: Distance matrix (km)
 ```
@@ -356,7 +371,7 @@ Veh | Distance |  1    2    3  ... | Inside | Outside
 - `tpoint_length()` - Calculate length
 - `geom_in()` - Parse WKT geometry
 
-**Use cases**: 
+**Use cases**:
 - Road taxation by municipality
 - Pollution analysis
 - Urban planning
@@ -439,8 +454,8 @@ Vehicle: 1, Date: 2020-06-01, Seq: 1
 
 **Key Function**:
 - `temporal_simplify_dp(trip, epsilon, synchronize)`
-  - `synchronize=false` &#8594; DP
-  - `synchronize=true` &#8594; SED
+    - `synchronize=false` &#8594; DP
+    - `synchronize=true` &#8594; SED
 
 **Use cases**:
 - Data compression (50% reduction typical)
@@ -476,7 +491,7 @@ STBOX X((473212,6578740),(499152,6607165)), T([2020-06-01, 2020-06-11])
 [3@2020-06-01 02:00:00, 3@2020-06-01 03:00:00)
 ```
 
-**Interpretation**: 
+**Interpretation**:
 - 0-1h: 1 vehicle active
 - 1-2h: 2 vehicles active
 - 2-3h: 3 vehicles active (peak hour)
@@ -702,10 +717,10 @@ RTree index: Check 200,000 boxes in the specified region/bounding box → 180 ms
 **Note**: RTree is not a silver bullet   
 For small datasets, Brute Force can outperform the R-Tree because:
 1. Initialization Cost
-   - Building the index and managing native memory pointers adds a fixed overhead. 
-     - For small datasets, this setup time can outpace the actual search gains, making Brute Force faster.
+    - Building the index and managing native memory pointers adds a fixed overhead.
+        - For small datasets, this setup time can outpace the actual search gains, making Brute Force faster.
 2. Search Threshold
-   - The R-Tree only becomes profitable when the time saved by "pruning" the search space exceeds the time spent traversing the tree structure.
+    - The R-Tree only becomes profitable when the time saved by "pruning" the search space exceeds the time spent traversing the tree structure.
 
 Rule of thumb: Use R-Trees for large-scale spatial datasets (like the 5M boxes in the program) or when making frequent, repeated queries on the same data.
 
@@ -1098,6 +1113,20 @@ mvn exec:java -Dexec.mainClass="AIS_Read"
 mvn exec:java -Dexec.mainClass="examples.N02_AIS_Read"
 ```
 
+### NoClassDefFoundError / Could not resolve dependencies
+If you get `NoClassDefFoundError: functions/error_handler_fn` or
+`Could not find artifact org.jmeos:jmeos:jar:1.0-SNAPSHOT`, the fat JAR
+has not been registered in the local Maven repository. Run:
+```bash
+mvn install:install-file \
+  -Dfile=src/lib/JMEOS-fat.jar \
+  -DgroupId=org.jmeos \
+  -DartifactId=jmeos \
+  -Dversion=1.0-SNAPSHOT \
+  -Dpackaging=jar \
+  -DgeneratePom=true
+```
+This must be done once per container. If you recreate the container, run it again.
 
 ### Database Connection (Linux + Docker)
 ```bash
@@ -1126,9 +1155,9 @@ docker run -it --name jmeos-examples \
 
 - **MEOS Documentation**: https://libmeos.org/
 - **MobilityDB**: https://mobilitydb.com/
-- **AIS Data**: 
-  - Marine vessel tracking system
-  - https://coast.noaa.gov/htdata/CMSP/AISDataHandler/2020/index.html
-- **BerlinMOD**: 
-  - Benchmark for moving object databases
-  - https://github.com/MobilityDB/MobilityDB-BerlinMOD
+- **AIS Data**:
+    - Marine vessel tracking system
+    - https://coast.noaa.gov/htdata/CMSP/AISDataHandler/2020/index.html
+- **BerlinMOD**:
+    - Benchmark for moving object databases
+    - https://github.com/MobilityDB/MobilityDB-BerlinMOD

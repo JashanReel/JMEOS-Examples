@@ -78,12 +78,11 @@ nm -D /workspace/src/libmeos.so | grep meos_initialize_timezone
 
 ### Building the JMEOS fat JAR
 
+The fat JAR (`jar/JMEOS-fat.jar`) is already included in the JMEOS-examples repository.
 It bundles all Java dependencies (jnr-ffi, etc.) into a single file,
 avoiding the `%maven` limitations of the rapaio-jupyter-kernel.
 
-The fat JAR (`jar/JMEOS-fat.jar`) is not included in the JMEOS-examples repository.
-
-In order to rebuild it from the latest JMEOS sources, run the following
+If you need to rebuild it from the latest JMEOS sources, run the following
 from the **JMEOS** repository (not the examples repository):
 ```bash
 mvn package -pl jmeos-core -am -DskipTests
